@@ -41,7 +41,7 @@ async function githubHook(req: Request, u: URL) {
       throw undefined
     }
 
-    return new Response('', { status: 400 })
+    return new Response('', { status: 200 })
   } catch (error) {
     if (error instanceof Error) {
       console.error(error)
