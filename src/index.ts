@@ -1,4 +1,4 @@
-
+const FgRed = "\x1b[31m"
 
 Bun.serve({
   fetch(req) {
@@ -30,21 +30,20 @@ async function githubHook(req: Request, u: URL) {
   }
 
   try {
-    const body = await req.text()
-    const payload = JSON.parse(body)
+    const body = await req.json()
 
-    const repo = payload.repository.full_name
+    const repo = body.repository.full_name
 
-    console.log(payload)
-
-    if (repo != 'ariaandika/dev-serve') {
-      throw undefined
-    }
+    console.log(body)
 
     return new Response('', { status: 200 })
   } catch (error) {
     if (error instanceof Error) {
       console.error(error)
+    } else {
+      console.log(FgRed + '%s\x1b[0m', "[ERROR]");
+      console.error(error)
+      console.log(FgRed + '%s\x1b[0m', "[/ERROR]");
     }
     return new Response('', { status: 400 })
   }
