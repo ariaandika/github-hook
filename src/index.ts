@@ -1,11 +1,15 @@
 const FgRed = "\x1b[31m"
 
-Bun.serve({
-  fetch(req) {
+const server = Bun.serve({
+  async fetch(req) {
     const url = new URL(req.url)
 
     if (url.pathname === '/github') {
       return githubHook(req, url)
+    }
+
+    if (req.method === 'POST') {
+      return Response.json({ data: await req.text() })
     }
 
 
@@ -32,8 +36,6 @@ async function githubHook(req: Request, u: URL) {
   try {
     const body = await req.json()
 
-    const repo = body.repository.full_name
-
     console.log(body)
 
     return new Response('', { status: 200 })
@@ -48,4 +50,9 @@ async function githubHook(req: Request, u: URL) {
     return new Response('', { status: 400 })
   }
 }
+
+process.on('SIGINT',() => {
+  server.stop()
+})
+
 
